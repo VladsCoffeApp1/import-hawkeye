@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gcloud iap web get-iam-policy:*)",
+      "Bash(gcloud iap web add-iam-policy-binding:*)",
+      "Bash(gcloud iap web remove-iam-policy-binding:*)",
+      "Bash(set GOOGLE_APPLICATION_CREDENTIALS=:*)",
+      "Bash(gcloud config set:*)",
+      "Bash(gcloud auth application-default set-quota-project:*)",
+      "Bash(gcloud auth list:*)",
+      "Bash(gcloud auth print-access-token:*)",
+      "Bash(set GOOGLE_APPLICATION_CREDENTIALS=c:credentialsmobile-research-328923-f2a7f95782d8.json:*)",
+      "Bash(uv run python:*)",
+      "Bash(powershell -Command \"$env:GOOGLE_APPLICATION_CREDENTIALS=''c:\\credentials\\mobile-research-328923-f2a7f95782d8.json''; cd d:/import-skytrace; uv run python backfill_check.py\")",
+      "Bash(powershell -Command \"$env:GOOGLE_APPLICATION_CREDENTIALS=''c:\\credentials\\mobile-research-328923-f2a7f95782d8.json''; cd d:/import-skytrace; uv run python -c \"\"\nfrom google.cloud import bigquery\nfrom google.oauth2 import service_account\n\ncredentials = service_account.Credentials.from_service_account_file(r''c:\\credentials\\mobile-research-328923-f2a7f95782d8.json'')\nclient = bigquery.Client(project=''soldier-tracker'', credentials=credentials)\n\n# Source tables (EU region)\nsources = [\n    (''geospatial-361320.hawkeye.vhf'', ''EU''),\n    (''geospatial-361320.hawkeye.gps'', ''EU''),\n    (''geospatial-361320.hawkeye.airdefense'', ''EU''),\n]\n\n# Destination tables (US region)\ndests = [\n    ''soldier-tracker.hawkeye.vhf_v3'',\n    ''soldier-tracker.hawkeye.gps_v3'',\n    ''soldier-tracker.hawkeye.airdefense_v2'',\n]\n\nprint(''SOURCE TABLES (geospatial-361320.hawkeye)'')\nprint(''=''*50)\nfor table, loc in sources:\n    try:\n        result = list(client.query(f''SELECT COUNT(*) as cnt FROM \\`{table}\\`'', location=loc).result())[0]\n        print(f''{table.split(\"\".\"\")[-1]:15} {result.cnt:>10,} rows'')\n    except Exception as e:\n        print(f''{table.split(\"\".\"\")[-1]:15} Error: {e}'')\n\nprint()\nprint(''DESTINATION TABLES (soldier-tracker.hawkeye)'')\nprint(''=''*50)\nfor table in dests:\n    try:\n        result = list(client.query(f''SELECT COUNT(*) as cnt FROM \\`{table}\\`'').result())[0]\n        print(f''{table.split(\"\".\"\")[-1]:15} {result.cnt:>10,} rows'')\n    except Exception as e:\n        print(f''{table.split(\"\".\"\")[-1]:15} Error: {e}'')\n\"\"\")"
+    ]
+  }
+}

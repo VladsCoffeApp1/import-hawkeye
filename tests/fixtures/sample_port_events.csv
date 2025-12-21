@@ -1,0 +1,3 @@
+Event Time,Imo,Vessel Name,Vessel Category,Port Name,Port Country,Port Unlocode,Ata,Atd,Duration Seconds,Draught Ata,Draught Atd
+2024-01-15 10:30:00,9876543,TANKER ONE,Tanker,Rotterdam,Netherlands,NLRTM,2024-01-14 08:00:00,2024-01-15 10:30:00,95400,12.5,11.2
+2024-01-15 11:45:00,1234567,CARGO SHIP,Bulk Carrier,Hamburg,Germany,DEHAM,2024-01-13 14:00:00,2024-01-15 11:45:00,165900,10.8,9.5

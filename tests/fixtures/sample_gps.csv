@@ -1,0 +1,3 @@
+Event Time,Latitude,Longitude,Country,Type,Source,Emitter Id,Max Freq,Min Freq,Power Level
+2024-01-15 10:30:00,48.8566,2.3522,France,GPS,Hawkeye,GPS-001,1575420000,1575400000,-120
+2024-01-15 11:45:00,51.5074,-0.1278,UK,GPS,Hawkeye,GPS-002,1575450000,1575380000,-115

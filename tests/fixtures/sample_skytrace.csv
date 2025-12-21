@@ -1,0 +1,3 @@
+Event Time,Latitude,Longitude,Country Code,Advertiser Id,App Id,Device Brand,Device Model,Platform,Entity Id,Satellite Provider
+2024-01-15 10:30:00,48.8566,2.3522,FR,adv-123456,com.app.example,Samsung,Galaxy S21,Android,entity-001,Starlink
+2024-01-15 11:45:00,51.5074,-0.1278,GB,adv-789012,com.app.test,Apple,iPhone 14,iOS,entity-002,OneWeb

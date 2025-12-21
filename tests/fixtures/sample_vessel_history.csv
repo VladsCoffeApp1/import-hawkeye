@@ -1,0 +1,3 @@
+Event Time,Imo,Vessel Name,Vessel Category,Latitude,Longitude,Country,Built Year,Speed Knots,Navigation Status,Course Degrees,Heading Degrees,Raw Destination,Commercial Owner
+2024-01-15 10:30:00,9876543,TANKER ONE,Tanker,51.9,4.5,Netherlands,2015,12.5,Under Way Using Engine,180,175,ROTTERDAM,Shell Trading
+2024-01-15 11:45:00,1234567,CARGO SHIP,Bulk Carrier,53.5,9.9,Germany,2010,8.2,At Anchor,0,355,HAMBURG,Cargill Ocean

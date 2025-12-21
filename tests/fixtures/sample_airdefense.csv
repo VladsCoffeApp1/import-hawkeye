@@ -1,0 +1,3 @@
+Event Time,Latitude,Longitude,Country,Type,Potential Emitter,Potential Emitter Nato,Country Of Origin,Detection Confidence,Potential Purpose,Potential Weapon System Association
+2024-01-15 10:30:00,48.8566,2.3522,France,Radar,SA-11,GADFLY,Russia,0.85,Air Defense,BUK-M1
+2024-01-15 11:45:00,51.5074,-0.1278,UK,Radar,SA-15,GAUNTLET,Russia,0.92,Point Defense,TOR-M1
