@@ -54,7 +54,7 @@ jobs:
           GCLOUD_CMD+=" --runtime=${{ env.RUNTIME }}"
           GCLOUD_CMD+=" --timeout=${{ env.TIMEOUT }}"
           GCLOUD_CMD+=" --trigger-http --region=${{ env.REGION }} --gen2"
-          GCLOUD_CMD+=" --source=./app --entry-point=main --memory=512Mi"
+          GCLOUD_CMD+=" --source=./app --entry-point=main --memory=1Gi"
           GCLOUD_CMD+=" --service-account=${{ env.RUNTIME_SERVICE_ACCOUNT_EMAIL }}"
           GCLOUD_CMD+=" --quiet"
 
