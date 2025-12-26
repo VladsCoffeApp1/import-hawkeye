@@ -70,15 +70,43 @@ class TestAirdefenseSchema:
 
 
 class TestSkytraceSchema:
-    """Test Skytrace schema."""
+    """Test Skytrace schema - matches production table with 61 columns."""
 
-    def test_skytrace_has_schema(self):
-        """Skytrace should have BigQuery schema."""
-        assert len(skytrace.BIGQUERY_SCHEMA) >= 10
+    def test_skytrace_has_61_columns(self):
+        """Skytrace schema must have 61 BigQuery columns (matching production)."""
+        assert len(skytrace.BIGQUERY_SCHEMA) == 61
 
-    def test_skytrace_column_mapping(self):
-        """Skytrace should have column mapping."""
-        assert len(skytrace.COLUMN_MAPPING) >= 10
+    def test_skytrace_column_mapping_complete(self):
+        """All CSV columns should be mapped (60 columns - event_date is computed)."""
+        assert len(skytrace.COLUMN_MAPPING) == 60
+
+    def test_skytrace_only_drops_allowed(self):
+        """Skytrace should only drop Snet Username and pandas duplicates."""
+        allowed_drops = {"Snet Username", "Event Time.1", "Mac.1", "Name.1", "Tech.1"}
+        assert set(skytrace.COLUMNS_TO_DROP) == allowed_drops
+
+    def test_skytrace_has_document_id(self):
+        """Skytrace must have document_id for deduplication."""
+        assert "Document ID" in skytrace.COLUMN_MAPPING
+        assert skytrace.COLUMN_MAPPING["Document ID"] == "document_id"
+        doc_id_field = next(
+            (f for f in skytrace.BIGQUERY_SCHEMA if f.name == "document_id"),
+            None
+        )
+        assert doc_id_field is not None
+        assert doc_id_field.mode == "REQUIRED"
+
+    def test_skytrace_has_all_type_columns(self):
+        """All type columns must exist in column mapping values."""
+        mapped_cols = set(skytrace.COLUMN_MAPPING.values())
+        for col in skytrace.TIMESTAMP_COLUMNS:
+            assert col in mapped_cols or col == "event_date"
+        for col in skytrace.FLOAT_COLUMNS:
+            assert col in mapped_cols
+        for col in skytrace.INT_COLUMNS:
+            assert col in mapped_cols
+        for col in skytrace.STRING_COLUMNS:
+            assert col in mapped_cols
 
 
 class TestShadowfleetPortEventsSchema:

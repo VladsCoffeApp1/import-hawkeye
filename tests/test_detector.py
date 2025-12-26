@@ -28,21 +28,21 @@ class TestGPSDetection:
         columns = ["Event Time", "Emitter Id", "Country", "Lat", "Lon"]
         data_type, table = detect_data_type(columns)
         assert data_type == DataType.GPS
-        assert table == "gps_v5"
+        assert table == "gps"
 
     def test_detects_gps_by_max_freq(self):
         """GPS should be detected by Max Freq column."""
         columns = ["Event Time", "Max Freq", "Country", "Lat", "Lon"]
         data_type, table = detect_data_type(columns)
         assert data_type == DataType.GPS
-        assert table == "gps_v5"
+        assert table == "gps"
 
     def test_detects_gps_by_min_freq(self):
         """GPS should be detected by Min Freq column."""
         columns = ["Event Time", "Min Freq", "Country", "Lat", "Lon"]
         data_type, table = detect_data_type(columns)
         assert data_type == DataType.GPS
-        assert table == "gps_v5"
+        assert table == "gps"
 
 
 class TestVHFDetection:
@@ -53,21 +53,21 @@ class TestVHFDetection:
         columns = ["Event Time", "Bandwidth", "Country", "Lat", "Lon"]
         data_type, table = detect_data_type(columns)
         assert data_type == DataType.VHF
-        assert table == "vhf_v5"
+        assert table == "vhf"
 
     def test_detects_vhf_by_signal_type(self):
         """VHF should be detected by Signal Type column."""
         columns = ["Event Time", "Signal Type", "Country", "Lat", "Lon"]
         data_type, table = detect_data_type(columns)
         assert data_type == DataType.VHF
-        assert table == "vhf_v5"
+        assert table == "vhf"
 
     def test_detects_vhf_by_burst_duration(self):
         """VHF should be detected by Burst Duration column."""
         columns = ["Event Time", "Burst Duration", "Country", "Lat", "Lon"]
         data_type, table = detect_data_type(columns)
         assert data_type == DataType.VHF
-        assert table == "vhf_v5"
+        assert table == "vhf"
 
 
 class TestAirdefenseDetection:
@@ -78,14 +78,14 @@ class TestAirdefenseDetection:
         columns = ["Event Time", "Potential Emitter", "Country", "Lat", "Lon"]
         data_type, table = detect_data_type(columns)
         assert data_type == DataType.AIRDEFENSE
-        assert table == "airdefense_v4"
+        assert table == "airdefense"
 
     def test_detects_airdefense_by_country_of_origin(self):
         """Airdefense should be detected by Country Of Origin column."""
         columns = ["Event Time", "Country Of Origin", "Country", "Lat", "Lon"]
         data_type, table = detect_data_type(columns)
         assert data_type == DataType.AIRDEFENSE
-        assert table == "airdefense_v4"
+        assert table == "airdefense"
 
 
 class TestSkytraceDetection:
@@ -96,21 +96,21 @@ class TestSkytraceDetection:
         columns = ["Event Time", "Advertiser Id", "Latitude", "Longitude"]
         data_type, table = detect_data_type(columns)
         assert data_type == DataType.SKYTRACE
-        assert table == "skytrace_v2"
+        assert table == "skytrace"
 
     def test_detects_skytrace_by_satellite_provider(self):
         """Skytrace should be detected by Satellite Provider column."""
         columns = ["Event Time", "Satellite Provider", "Latitude", "Longitude"]
         data_type, table = detect_data_type(columns)
         assert data_type == DataType.SKYTRACE
-        assert table == "skytrace_v2"
+        assert table == "skytrace"
 
     def test_detects_skytrace_by_app_id(self):
         """Skytrace should be detected by App Id column."""
         columns = ["Event Time", "App Id", "Latitude", "Longitude"]
         data_type, table = detect_data_type(columns)
         assert data_type == DataType.SKYTRACE
-        assert table == "skytrace_v2"
+        assert table == "skytrace"
 
 
 class TestPortEventsDetection:
