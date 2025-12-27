@@ -11,7 +11,7 @@ Format docstrings according to PEP 287
 File: vhf.py
 
 VHF schema definition for BigQuery.
-Matches vhf_v3 schema with 30 columns - KEEP ALL DATA!
+Matches vhf schema with 31 columns - KEEP ALL DATA!
 """
 
 from google.cloud import bigquery
@@ -22,7 +22,7 @@ COLUMNS_TO_DROP: list[str] = [
     "_id",
     "_index",
     "Snet Username",
-    "Image Id",  # Not in vhf_v3
+    "Image Id",  # Not in vhf table
     "Coordinates",  # Parsed into lat/lon
 ]
 
@@ -100,7 +100,7 @@ STRING_COLUMNS: list[str] = [
     "emitter_id",
 ]
 
-# BigQuery schema definition - matches vhf_v3 + emitter_id
+# BigQuery schema definition - matches vhf table
 BIGQUERY_SCHEMA: list[bigquery.SchemaField] = [
     bigquery.SchemaField("document_id", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("display_name", "STRING", mode="NULLABLE"),
@@ -140,3 +140,6 @@ PARTITION_FIELD: str = "event_date"
 
 # Cluster fields for BigQuery table
 CLUSTER_FIELDS: list[str] = ["country", "type", "source"]
+
+# Deduplication key columns (natural key for MERGE)
+DEDUP_KEY: list[str] = ["latitude", "longitude", "event_time", "frequency"]

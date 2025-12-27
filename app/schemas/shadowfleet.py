@@ -166,6 +166,9 @@ PORT_EVENTS_PARTITION_FIELD: str = "event_date"
 
 PORT_EVENTS_CLUSTER_FIELDS: list[str] = ["port_country", "vessel_category", "imo"]
 
+# Deduplication key columns (natural key for MERGE)
+PORT_EVENTS_DEDUP_KEY: list[str] = ["latitude", "longitude", "event_time", "imo"]
+
 # =============================================================================
 # VESSEL HISTORY SCHEMA (40 columns - KEEP ALL DATA!)
 # =============================================================================
@@ -317,3 +320,6 @@ VESSEL_HISTORY_BIGQUERY_SCHEMA: list[bigquery.SchemaField] = [
 VESSEL_HISTORY_PARTITION_FIELD: str = "event_date"
 
 VESSEL_HISTORY_CLUSTER_FIELDS: list[str] = ["vessel_category", "imo", "country"]
+
+# Deduplication key columns (natural key for MERGE)
+VESSEL_HISTORY_DEDUP_KEY: list[str] = ["latitude", "longitude", "event_time", "imo"]

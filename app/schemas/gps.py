@@ -11,7 +11,7 @@ Format docstrings according to PEP 287
 File: gps.py
 
 GPS schema definition for BigQuery.
-Matches gps_v3 schema with 28 columns - KEEP ALL DATA!
+Matches gps schema with 29 columns - KEEP ALL DATA!
 """
 
 from google.cloud import bigquery
@@ -22,7 +22,7 @@ COLUMNS_TO_DROP: list[str] = [
     "_id",
     "_index",
     "Snet Username",
-    "Image Id",  # Not in gps_v3
+    "Image Id",  # Not in gps
 ]
 
 # Column name mapping: CSV column name -> BigQuery column name
@@ -95,7 +95,7 @@ STRING_COLUMNS: list[str] = [
     "version",
 ]
 
-# BigQuery schema definition - matches gps_v3 + power_level
+# BigQuery schema definition - matches gps table
 BIGQUERY_SCHEMA: list[bigquery.SchemaField] = [
     bigquery.SchemaField("document_id", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("display_name", "STRING", mode="NULLABLE"),
@@ -133,3 +133,6 @@ PARTITION_FIELD: str = "event_date"
 
 # Cluster fields for BigQuery table
 CLUSTER_FIELDS: list[str] = ["country", "type", "source"]
+
+# Deduplication key columns (natural key for MERGE)
+DEDUP_KEY: list[str] = ["orientation", "semi_major", "semi_minor", "event_time", "event_date"]

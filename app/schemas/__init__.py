@@ -33,6 +33,7 @@ class SchemaConfig:
         bigquery_schema: list,
         partition_field: str,
         cluster_fields: list[str],
+        dedup_key: list[str],
     ):
         self.columns_to_drop = columns_to_drop
         self.column_mapping = column_mapping
@@ -43,6 +44,7 @@ class SchemaConfig:
         self.bigquery_schema = bigquery_schema
         self.partition_field = partition_field
         self.cluster_fields = cluster_fields
+        self.dedup_key = dedup_key
 
 
 def get_schema(data_type: DataType) -> SchemaConfig:
@@ -63,6 +65,7 @@ def get_schema(data_type: DataType) -> SchemaConfig:
             bigquery_schema=vhf.BIGQUERY_SCHEMA,
             partition_field=vhf.PARTITION_FIELD,
             cluster_fields=vhf.CLUSTER_FIELDS,
+            dedup_key=vhf.DEDUP_KEY,
         )
     elif data_type == DataType.GPS:
         return SchemaConfig(
@@ -75,6 +78,7 @@ def get_schema(data_type: DataType) -> SchemaConfig:
             bigquery_schema=gps.BIGQUERY_SCHEMA,
             partition_field=gps.PARTITION_FIELD,
             cluster_fields=gps.CLUSTER_FIELDS,
+            dedup_key=gps.DEDUP_KEY,
         )
     elif data_type == DataType.AIRDEFENSE:
         return SchemaConfig(
@@ -87,6 +91,7 @@ def get_schema(data_type: DataType) -> SchemaConfig:
             bigquery_schema=airdefense.BIGQUERY_SCHEMA,
             partition_field=airdefense.PARTITION_FIELD,
             cluster_fields=airdefense.CLUSTER_FIELDS,
+            dedup_key=airdefense.DEDUP_KEY,
         )
     elif data_type == DataType.SKYTRACE:
         return SchemaConfig(
@@ -99,6 +104,7 @@ def get_schema(data_type: DataType) -> SchemaConfig:
             bigquery_schema=skytrace.BIGQUERY_SCHEMA,
             partition_field=skytrace.PARTITION_FIELD,
             cluster_fields=skytrace.CLUSTER_FIELDS,
+            dedup_key=skytrace.DEDUP_KEY,
         )
     elif data_type == DataType.SHADOWFLEET_PORT_EVENTS:
         return SchemaConfig(
@@ -111,6 +117,7 @@ def get_schema(data_type: DataType) -> SchemaConfig:
             bigquery_schema=shadowfleet.PORT_EVENTS_BIGQUERY_SCHEMA,
             partition_field=shadowfleet.PORT_EVENTS_PARTITION_FIELD,
             cluster_fields=shadowfleet.PORT_EVENTS_CLUSTER_FIELDS,
+            dedup_key=shadowfleet.PORT_EVENTS_DEDUP_KEY,
         )
     elif data_type == DataType.SHADOWFLEET_VESSEL_HISTORY:
         return SchemaConfig(
@@ -123,6 +130,7 @@ def get_schema(data_type: DataType) -> SchemaConfig:
             bigquery_schema=shadowfleet.VESSEL_HISTORY_BIGQUERY_SCHEMA,
             partition_field=shadowfleet.VESSEL_HISTORY_PARTITION_FIELD,
             cluster_fields=shadowfleet.VESSEL_HISTORY_CLUSTER_FIELDS,
+            dedup_key=shadowfleet.VESSEL_HISTORY_DEDUP_KEY,
         )
     else:
         raise ValueError(f"Unknown data type: {data_type}")

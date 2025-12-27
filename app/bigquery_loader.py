@@ -118,9 +118,10 @@ def load_to_bigquery(
         # Ensure target table exists
         get_or_create_table(client, project, dataset, table, data_type)
 
-        # Filter schema to match dataframe columns
-        full_schema = get_schema(data_type).bigquery_schema
-        filtered_schema = filter_schema_to_dataframe(full_schema, df)
+        # Get schema config including dedup key
+        schema_config = get_schema(data_type)
+        filtered_schema = filter_schema_to_dataframe(schema_config.bigquery_schema, df)
+        dedup_key = schema_config.dedup_key
 
         # Load to temp staging table
         staging_table = f"{table}_staging"
@@ -140,11 +141,19 @@ def load_to_bigquery(
         column_list = ", ".join(columns)
         source_columns = ", ".join([f"s.{col}" for col in columns])
 
-        # MERGE: insert only new document_ids
+        # Build MERGE ON clause from schema dedup_key
+        log.debug(f"Using dedup key: {dedup_key}")
+        on_conditions = [
+            f"COALESCE(t.{col}, '') = COALESCE(s.{col}, '')" if col not in ["latitude", "longitude", "event_time"]
+            else f"t.{col} = s.{col}"
+            for col in dedup_key
+        ]
+        on_clause = " AND ".join(on_conditions)
+
         merge_query = f"""
         MERGE `{table_id}` t
         USING `{staging_table_id}` s
-        ON t.document_id = s.document_id
+        ON {on_clause}
         WHEN NOT MATCHED THEN
             INSERT ({column_list})
             VALUES ({source_columns})

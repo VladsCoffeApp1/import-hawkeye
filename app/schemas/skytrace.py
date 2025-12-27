@@ -236,3 +236,6 @@ PARTITION_FIELD: str = "event_date"
 
 # Cluster fields for BigQuery table
 CLUSTER_FIELDS: list[str] = ["country_code", "satellite_provider", "entity_id"]
+
+# Deduplication key columns (natural key for MERGE)
+DEDUP_KEY: list[str] = ["latitude", "longitude", "event_time", "entity_id"]

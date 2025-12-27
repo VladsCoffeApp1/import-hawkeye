@@ -11,7 +11,7 @@ Format docstrings according to PEP 287
 File: airdefense.py
 
 Airdefense schema definition for BigQuery.
-Matches airdefense_v2 schema with 26 columns - KEEP ALL DATA!
+Matches airdefense schema with 26 columns - KEEP ALL DATA!
 """
 
 from google.cloud import bigquery
@@ -89,7 +89,7 @@ STRING_COLUMNS: list[str] = [
     "potential_weapon_system_association",
 ]
 
-# BigQuery schema definition - matches airdefense_v2
+# BigQuery schema definition - matches airdefense
 BIGQUERY_SCHEMA: list[bigquery.SchemaField] = [
     bigquery.SchemaField("document_id", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("display_name", "STRING", mode="NULLABLE"),
@@ -124,3 +124,6 @@ PARTITION_FIELD: str = "event_date"
 
 # Cluster fields for BigQuery table
 CLUSTER_FIELDS: list[str] = ["country", "type", "potential_emitter"]
+
+# Deduplication key columns (natural key for MERGE)
+DEDUP_KEY: list[str] = ["latitude", "longitude", "event_time", "semi_major", "semi_minor", "orientation"]

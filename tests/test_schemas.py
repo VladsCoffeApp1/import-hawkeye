@@ -10,7 +10,7 @@ class TestGPSSchema:
     """Test GPS schema has all required columns."""
 
     def test_gps_has_29_columns(self):
-        """GPS schema must have 29 BigQuery columns (matching gps_v3)."""
+        """GPS schema must have 29 BigQuery columns (matching gps)."""
         assert len(gps.BIGQUERY_SCHEMA) == 29
 
     def test_gps_column_mapping_complete(self):
@@ -39,7 +39,7 @@ class TestVHFSchema:
     """Test VHF schema has all required columns."""
 
     def test_vhf_has_31_columns(self):
-        """VHF schema must have 31 BigQuery columns (matching vhf_v3)."""
+        """VHF schema must have 31 BigQuery columns (matching vhf)."""
         assert len(vhf.BIGQUERY_SCHEMA) == 31
 
     def test_vhf_column_mapping_complete(self):
@@ -56,7 +56,7 @@ class TestAirdefenseSchema:
     """Test Airdefense schema has all required columns."""
 
     def test_airdefense_has_26_columns(self):
-        """Airdefense schema must have 26 BigQuery columns (matching airdefense_v2)."""
+        """Airdefense schema must have 26 BigQuery columns (matching airdefense)."""
         assert len(airdefense.BIGQUERY_SCHEMA) == 26
 
     def test_airdefense_column_mapping_complete(self):
