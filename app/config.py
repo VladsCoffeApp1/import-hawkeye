@@ -50,9 +50,6 @@ class Settings(BaseSettings):
     # BigQuery Settings
     bq_dataset: str = Field(default="hawkeye_eu", alias="BQ_DATASET")
 
-    # Cloud Storage Settings
-    gcs_bucket: str = Field(default="hawkeye-imports", alias="GCS_BUCKET")
-
     # Discord Settings
     discord_hook_url: str | None = Field(default=None, alias="DISCORD_HOOK_URL")
     discord_at_mention: str | None = Field(default=None, alias="DISCORD_AT_MENTION")

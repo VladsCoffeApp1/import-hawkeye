@@ -10,7 +10,7 @@ SPDX-License-Identifier: LicenseRef-NonCommercial-Only
 Format docstrings according to PEP 287
 File: main.py
 
-Cloud Function entry point for unified Hawkeye imports.
+Cloud Function entry point. HTTP boundary only - delegates to conductor.
 """
 
 from typing import Any
@@ -18,27 +18,35 @@ from typing import Any
 import pendulum
 from loguru import logger as log
 
-from .bigquery_loader import load_to_bigquery
+from . import conductor
 from .config import settings
-from .detector import detect_data_type
+from .custom_exceptions import RequestError
 from .discord_hook import handle_return
-from .request_handler import (
-    determine_input_mode,
-    download_from_gcs,
-    extract_all_csvs_from_zip,
-    parse_gcs_trigger,
-    parse_zip_upload,
-)
-from .transform import clean_dataframe
+
+
+def _parse_request(request: Any) -> bytes:
+    """
+    Extract ZIP data from HTTP request.
+
+    :param request: Flask request object
+    :returns: ZIP file contents as bytes
+    :raises RequestError: If no file data found
+    """
+    if request.files:
+        file = next(iter(request.files.values()))
+        log.debug(f"Received file upload: {file.filename}")
+        return file.read()
+
+    if request.data:
+        log.debug(f"Received raw data: {len(request.data)} bytes")
+        return request.data
+
+    raise RequestError("No file data in request")
 
 
 def main(request: Any) -> dict[str, Any]:
     """
     Cloud Function entry point.
-
-    Accepts ZIP files containing CSV data, auto-detects the data type,
-    transforms the data, and loads it to the appropriate BigQuery table.
-    Handles ZIP files with multiple CSVs (e.g., shadowfleet with port_events and vessel_history).
 
     :param request: Flask request object
     :returns: Response dictionary with status and message
@@ -47,53 +55,29 @@ def main(request: Any) -> dict[str, Any]:
     log.info("Hawkeye import started")
 
     try:
-        # 1. Determine input mode and get ZIP data
-        input_mode = determine_input_mode(request)
-        log.debug(f"Input mode: {input_mode}")
+        # IN: HTTP request → bytes
+        zip_data = _parse_request(request)
 
-        if input_mode == "gcs":
-            gcs_ref = parse_gcs_trigger(request)
-            log.info(f"Processing GCS file: gs://{gcs_ref.bucket}/{gcs_ref.blob}")
-            zip_data = download_from_gcs(gcs_ref.bucket, gcs_ref.blob)
-        else:
-            log.info("Processing uploaded file")
-            zip_data = parse_zip_upload(request)
+        # DELEGATE: conductor handles everything
+        result = conductor.run(zip_data)
 
-        # 2. Extract ALL CSVs from ZIP
-        csv_files = extract_all_csvs_from_zip(zip_data)
-        log.info(f"Found {len(csv_files)} CSV files in ZIP")
-
-        # 3. Process each CSV file
-        total_rows = 0
-        results = []
-
-        for csv_name, raw_df in csv_files:
-            log.info(f"Processing {csv_name} ({len(raw_df)} rows)")
-
-            # Detect type
-            data_type, target_table = detect_data_type(raw_df.columns.tolist())
-            log.info(f"Detected {data_type.value} -> {target_table}")
-
-            # Transform data
-            df = clean_dataframe(raw_df, data_type)
-
-            # Load to BigQuery
-            loaded_rows = load_to_bigquery(
-                df=df,
-                data_type=data_type,
-                project=settings.project_id,
-                dataset=settings.bq_dataset,
-                table=target_table,
-            )
-
-            total_rows += loaded_rows
-            results.append(f"{loaded_rows} {data_type.value} rows to {target_table}")
-
-        # 4. Calculate duration and return
+        # OUT: results → HTTP response
         duration = (pendulum.now() - start).in_seconds()
-        message = f"Loaded {total_rows} total rows ({'; '.join(results)}) in {duration:.1f}s"
-        log.info(message)
+        message = f"{result.message} in {duration:.1f}s"
 
+        # Determine status based on results
+        if not result.successful:
+            # All CSVs failed
+            log.error(message)
+            return {"status": "error", "message": message}
+
+        if result.failed:
+            # Some succeeded, some failed
+            log.warning(message)
+            return {"status": "partial", "message": message}
+
+        # All succeeded
+        log.info(message)
         return handle_return(message, settings.discord_hook_url)
 
     except Exception as e:

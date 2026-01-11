@@ -74,6 +74,24 @@ def clean_dataframe(df: pd.DataFrame, data_type: DataType) -> pd.DataFrame:
             log.debug("Adding event_date partition column")
             df["event_date"] = pd.to_datetime(df["event_time"], errors="coerce").dt.date
 
+        # Fill NULLs in dedup key columns with type-appropriate defaults
+        # This ensures BigQuery MERGE can use simple equality comparisons
+        for col in schema.dedup_key:
+            if col not in df.columns:
+                continue
+            if col in schema.float_columns:
+                df[col] = df[col].fillna(0.0)
+            elif col in schema.timestamp_columns:
+                df[col] = df[col].fillna(pd.Timestamp("1970-01-01", tz="UTC"))
+            elif col in schema.int_columns:
+                df[col] = df[col].fillna(0)
+            elif col in schema.string_columns:
+                df[col] = df[col].fillna("")
+            elif col == schema.partition_field:
+                # DATE field - fill with epoch date
+                df[col] = df[col].fillna(pd.Timestamp("1970-01-01").date())
+            log.debug(f"Filled NULLs in dedup key column: {col}")
+
         log.info(f"Transformation complete: {len(df)} rows, {len(df.columns)} columns")
         return df
 

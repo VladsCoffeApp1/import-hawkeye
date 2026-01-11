@@ -54,11 +54,13 @@ class TestLoadToBigQuery:
         call_args = mock_client.load_table_from_dataframe.call_args
         assert "test-table_staging" in call_args[0][1]
 
-        # Verify MERGE query executed
+        # Verify MERGE query executed with dedup key columns
         mock_client.query.assert_called_once()
         merge_query = mock_client.query.call_args[0][0]
         assert "MERGE" in merge_query
-        assert "document_id" in merge_query
+        # VHF dedup key: latitude, longitude, event_time, frequency
+        assert "latitude" in merge_query
+        assert "longitude" in merge_query
 
         # Verify staging table cleanup
         mock_client.delete_table.assert_called_once()

@@ -142,10 +142,17 @@ def load_to_bigquery(
         source_columns = ", ".join([f"s.{col}" for col in columns])
 
         # Build MERGE ON clause from schema dedup_key
+        # Non-string columns (FLOAT, TIMESTAMP, INT, DATE) cannot use COALESCE with ''
+        non_string_columns = set(
+            schema_config.float_columns
+            + schema_config.timestamp_columns
+            + schema_config.int_columns
+            + [schema_config.partition_field]  # DATE field
+        )
         log.debug(f"Using dedup key: {dedup_key}")
         on_conditions = [
-            f"COALESCE(t.{col}, '') = COALESCE(s.{col}, '')" if col not in ["latitude", "longitude", "event_time"]
-            else f"t.{col} = s.{col}"
+            f"t.{col} = s.{col}" if col in non_string_columns
+            else f"COALESCE(t.{col}, '') = COALESCE(s.{col}, '')"
             for col in dedup_key
         ]
         on_clause = " AND ".join(on_conditions)

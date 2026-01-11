@@ -1,7 +1,6 @@
 # Cloud Function dependencies
 # Generated from pyproject.toml for GCF deployment
 google-cloud-bigquery>=3.0.0
-google-cloud-storage>=2.0.0
 pandas>=2.0.0
 pyarrow>=14.0.0
 pendulum>=3.0.0

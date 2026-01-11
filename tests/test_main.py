@@ -18,7 +18,7 @@ class TestMain:
             zf.writestr("data.csv", csv_content)
         return buffer.getvalue()
 
-    @patch("app.main.load_to_bigquery")
+    @patch("app.conductor.load_to_bigquery")
     def test_processes_vhf_upload(self, mock_load):
         """VHF data is processed correctly from upload."""
         from app.main import main
@@ -42,7 +42,7 @@ class TestMain:
         assert "vhf" in result["message"].lower()
         mock_load.assert_called_once()
 
-    @patch("app.main.load_to_bigquery")
+    @patch("app.conductor.load_to_bigquery")
     def test_processes_gps_upload(self, mock_load):
         """GPS data is processed correctly from upload."""
         from app.main import main
@@ -65,7 +65,7 @@ class TestMain:
         assert result["status"] == "success"
         assert "gps" in result["message"].lower()
 
-    @patch("app.main.load_to_bigquery")
+    @patch("app.conductor.load_to_bigquery")
     def test_processes_airdefense_upload(self, mock_load):
         """Airdefense data is processed correctly from upload."""
         from app.main import main
@@ -87,7 +87,7 @@ class TestMain:
         assert result["status"] == "success"
         assert "airdefense" in result["message"].lower()
 
-    @patch("app.main.load_to_bigquery")
+    @patch("app.conductor.load_to_bigquery")
     def test_processes_skytrace_upload(self, mock_load):
         """Skytrace data is processed correctly from upload."""
         from app.main import main
@@ -109,7 +109,7 @@ class TestMain:
         assert result["status"] == "success"
         assert "skytrace" in result["message"].lower()
 
-    @patch("app.main.load_to_bigquery")
+    @patch("app.conductor.load_to_bigquery")
     def test_processes_port_events_upload(self, mock_load):
         """Port events data is processed correctly from upload."""
         from app.main import main
@@ -131,7 +131,7 @@ class TestMain:
         assert result["status"] == "success"
         assert "port_events" in result["message"].lower()
 
-    @patch("app.main.load_to_bigquery")
+    @patch("app.conductor.load_to_bigquery")
     def test_processes_vessel_history_upload(self, mock_load):
         """Vessel history data is processed correctly from upload."""
         from app.main import main
@@ -152,31 +152,6 @@ class TestMain:
 
         assert result["status"] == "success"
         assert "vessel_history" in result["message"].lower()
-
-    @patch("app.main.download_from_gcs")
-    @patch("app.main.load_to_bigquery")
-    def test_processes_gcs_trigger(self, mock_load, mock_download):
-        """GCS trigger is processed correctly."""
-        from app.main import main
-
-        csv_content = """Event Time,Latitude,Longitude,Bandwidth
-2024-01-15 10:30:00,48.8566,2.3522,25000"""
-
-        mock_download.return_value = self.create_test_zip(csv_content)
-        mock_load.return_value = 1
-
-        request = MagicMock()
-        request.get_json.return_value = {
-            "bucket": "test-bucket",
-            "name": "test-file.zip",
-        }
-        request.files = {}
-        request.data = None
-
-        result = main(request)
-
-        assert result["status"] == "success"
-        mock_download.assert_called_once_with("test-bucket", "test-file.zip")
 
     def test_returns_error_on_invalid_zip(self):
         """Error is returned for invalid ZIP file."""
