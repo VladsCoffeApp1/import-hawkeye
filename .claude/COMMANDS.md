@@ -190,8 +190,8 @@ curl -X POST https://europe-west3-soldier-tracker.cloudfunctions.net/import-hawk
 # Configure GCF_URL in project.env first
 # GCF_URL=https://europe-west3-soldier-tracker.cloudfunctions.net/import-hawkeye
 
-# Run the watcher
-uv run python watcher.py
+# Run the watcher (no console window)
+uv run pythonw watcher.pyw
 ```
 
 ---

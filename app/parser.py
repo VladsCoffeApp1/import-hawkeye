@@ -32,6 +32,15 @@ def parse_csv(csv_bytes: bytes, filename: str = "unknown") -> pd.DataFrame:
     """
     try:
         df = pd.read_csv(BytesIO(csv_bytes))
+
+        # Drop duplicate columns (e.g., "Loc At.1", "Mac.2")
+        # Pandas auto-renames duplicate headers with .1, .2, etc.
+        # These contain identical data, so we keep only the first occurrence
+        duplicate_cols = [col for col in df.columns if "." in col and col.rsplit(".", 1)[1].isdigit()]
+        if duplicate_cols:
+            log.info(f"Dropping {len(duplicate_cols)} duplicate columns from {filename}")
+            df = df.drop(columns=duplicate_cols)
+
         log.info(f"Parsed {len(df)} rows from {filename}")
         return df
     except Exception as e:

@@ -21,7 +21,7 @@
 # Dev files not needed in deployment
 tests/
 upload.py
-watcher.py
+watcher.pyw
 pyproject.toml
 uv.lock
 .pre-commit-config.yaml
